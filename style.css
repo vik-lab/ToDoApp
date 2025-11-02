@@ -1,0 +1,5 @@
+body { font-family: 'Arial', sans-serif; }
+li { padding: 5px; cursor: pointer; }
+button { margin-left: 10px; }
+.completed { text-decoration: line-through; color: gray; }
+#taskInput { width: 200px; padding: 5px; }      
