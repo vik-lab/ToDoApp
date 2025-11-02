@@ -1,0 +1,4 @@
+curl --request GET \
+	--url https://world-time-by-based-api.p.rapidapi.com/v1/worldtime/?location=Austin \
+	--header 'x-rapidapi-host: world-time-api3.p.rapidapi.com' \
+	--header 'x-rapidapi-key: fd84071de8msh2945a08a5dcc7f3p1241aajsne9ebd53bf477'
