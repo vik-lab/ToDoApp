@@ -1,3 +1,4 @@
+// timezone fetching functionality
 const apiKey = 'fd84071de8msh2945a08a5dcc7f3p1241aajsne9ebd53bf477';
 
 async function getTime(city) {
@@ -26,8 +27,51 @@ async function showTimes() {
     document.getElementById('auckland-time').textContent = 'Failed to load';
   }
 }
-document.addEventListener('DOMContentLoaded', showTimes);
 
+
+// weather fetching functionality
+async function getWeather(city) {
+  const response = await fetch(`https://weatherapi-com.p.rapidapi.com/alerts.json?q=${city}`, {
+    headers: {
+      'x-rapidapi-host': 'weatherapi-com.p.rapidapi.com',
+      'x-rapidapi-key': apiKey
+    }
+  });
+  if (!response.ok) {
+    throw new Error(`Error fetching weather for ${city}: ${response.statusText}`);
+  }
+  const data = await response.json();
+  return data.location ? data : { location: { lat: { toString: () => 'N/A' }, lon: { toString: () => 'N/A' } }, current: { condition: { text: 'N/A' }, temp_c: 'N/A' } };
+}
+
+async function showWeather() {
+  try {
+    const austinWeather = await getWeather('Austin');
+    const austinlatitude = austinWeather.location.lat.toString();
+    const austinlongitude = austinWeather.location.lon;
+    const aucklandWeather = await getWeather('Auckland');
+    const aucklandlatitude = aucklandWeather.location.lat;
+    const aucklandlongitude = aucklandWeather.location.lon;
+    document.getElementById('austin-weather').textContent = austinWeather.current.condition.text + ', ' + austinWeather.current.temp_c + '°C';
+    document.getElementById('auckland-weather').textContent = aucklandWeather.current.condition.text + ', ' + aucklandWeather.current.temp_c + '°C';
+    document.getElementById('austin-coordinates').textContent = `Lat: ${austinlatitude}, Lon: ${austinlongitude}`;
+    document.getElementById('auckland-coordinates').textContent = `Lat: ${aucklandlatitude}, Lon: ${aucklandlongitude}`;
+  } catch (error) {
+    console.error(error);
+    document.getElementById('austin-weather').textContent = 'Failed to load';
+    document.getElementById('auckland-weather').textContent = 'Failed to load';
+    document.getElementById('austin-coordinates').textContent = 'Failed to load';
+    document.getElementById('auckland-coordinates').textContent = 'Failed to load';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  showWeather();
+  showTimes();
+});
+
+
+// To-Do List Functionality
 let tasks = [];
 
 function addTask() {
@@ -69,11 +113,3 @@ function renderTasks() {
     list.appendChild(taskItem);
   });
 }
-
-
-/*
-curl --request GET \
-	--url 'https://world-time-by-based-api.p.rapidapi.com/v1/worldtime/?location=New%20York' \
-	--header 'x-rapidapi-host: world-time-by-based-api.p.rapidapi.com' \
-	--header 'x-rapidapi-key: fd84071de8msh2945a08a5dcc7f3p1241aajsne9ebd53bf477'
-*/
